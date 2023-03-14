@@ -8,6 +8,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 /**
  * This template demonstrates how to develop a test case for Hibernate ORM, using the Java Persistence API.
  */
@@ -31,7 +36,20 @@ public class JPAUnitTestCase {
 	public void hhh123Test() throws Exception {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		// Do stuff...
+
+		Bar bar = new Bar();
+
+		entityManager.persist(bar);
+
+		Foo foo = new Foo();
+		foo.setBars(List.of(bar));
+
+		entityManager.persist(foo);
+
+		FooBar fooBar = entityManager.createQuery("select fb from FooBar fb", FooBar.class).getResultList().get(0);
+
+		assertThat(fooBar.getNote(), equalTo("XXXXX"));
+
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
